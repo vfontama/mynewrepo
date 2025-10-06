@@ -1,83 +1,134 @@
-### **Initial Report and Exploratory Data Analysis (EDA)** 
+### **Predicting Dieabetes from survey data with ML classifiers**
 
-This notebook presents my initial exploratory data analysis on a dataset for predicting diabetes that I obtained from Kaggle. For this analysis I used the 'diabetes_binary_health_indicators_BRFSS2015.csv' file from the 'Diabetes Health Indicators Dataset' createdd by Alex Teboul.  
+This notebook willexplore the use of ML models to predict diabates. I will use a dataset from the Diabetes Health Indicators Dataset at Kaggle provided by Alex Teboul.    
+Dataset file: `diabetes_binary_health_indicators_BRFSS2015.csv` from the *Diabetes Health Indicators Dataset* by Alex Teboul.  It is based on the The Behavioral Risk Factor Surveillance System (BRFSS), which is a health-related telephone survey that is collected annually by the CDC. 
 
-# **Business understanding**
+---
 
-The business goal is to find a model that can predict the risk of diabetes from the survey data. If so, which of the factors in the dataset can explain the risk of diabetes? I will do EDA to understand the data and build initial baseline models with different ML classifiers (e.g. logistic regression,RandomForest) to find the best one for this task.
+## Business Understanding
 
-# **Data Understanding**
+The business goal is to **predict the risk of diabetes** using survey data and identify which dataset factors explain diabetes risk.  
+I performed EDA to understand the data, built initial baseline models with two ML classifiers (i.e. logistic regression and RandomForest). Then I explored additional ML algorithms to find one that does the best job of predicting which patients are likely to have diabetes.
+---
 
-In this section I explored the Diabetes Health Indicators Dataset dataset to understand the following aspects:
+## Data Understanding and EDA
 
-* **Data types:** how many variables are there? What data types? Are there only numeric variables or also categorigal ones?  
-* **data quality:** How many missing values are there? How many variables have a single value for all rows?
-*  **Correlations:** Which variables are correlated with each other or with price?
-* **Data distributions:** What is the distribution of the variables? Which of them are skewed?
-* **Outliers:** Are there aany outliers in the dataset? If so, how do we handle them?
+In this section, I explored the dataset to assess:
 
-1. The dataset has class imabalance: only 13.9% of respondents had diabetes.
+- **Data Types**  
+  Number of variables, their types (numeric/categorical)
 
-2. The data is skewed left for cholesterol check: majority of respondents have checked their cholesterol in the last 5 years. 
+- **Data Quality**  
+  Missing values, variables with just a single value across all rows
 
-3. The BMI variable is also heavily skewed right: majority of respondednts had BMI below 60
+- **Correlations**  
+  Which variables are correlated with each other or with outcome
 
-4. The Stroke variable is also heavily skewed right: majority of respondednts had no stroke
+- **Data Distributions**  
+  Distribution shape and skewness of variables
 
-5. The BMI variable is also has serious outliers, as a number of respondents had very high BMI above the IQR.
+- **Outliers**  
+  Detection and handling of outliers
 
-6. The HeartDiseaseorAttack variable is also heavily skewed right: majority of respondednts had no previous heart disease or heart attack
+**Key Insights from EDA:**
 
-7. In contrast the PhysActivity is skewed left: the majority of respondents had physical acitvity
+![alt text](image.png)
 
-8. The HvyAlcoholConsump variable is skewed right: majority of respondents reported not having high alcohol consumption
+1. The dataset has class imbalance: only **13.9%** of respondents had diabetes.
+2. **BMI** variable is heavily right-skewed; 65% of respondents have BMI below 29.
+3. **Stroke** variable is right-skewed; 96% of respondents had no stroke.
+4. 95% and 92% of respondents report **health coverage** and **access to a doctor respectively**.
 
-9. Majority of respondents reported having health coverage and having access to a Doctor
+5. Moderate/high correlations observed, e.g. **GenHlth vs PhysHlth (0.46)**, **GenHlth vs DiffWalk (0.53)**, **PhysHlth vs DiffWalk (0.48)**.
 
-10. The MentHlth variable is skewed right as majority of respondents reported having under 5 days of poor mental health in last 30 days. The same is true of the physical health variable, PhysHlth
+---
 
-11. There is a moderaetly high correlation between some of the variables e.g. between GenHlth vs PhysHlth, GenHlth vs DiffWalk, PhysHlth vs DiddWalk 
+## Baseline Classifier Models
 
+Models trained on cleansed dataset:
 
-# Baseline classifiier models
+| Model               | F1 Score | Precision | Recall   | AUC      | Accuracy |
+|---------------------|----------|-----------|----------|----------|----------|
+| **Random Forest**   | 0.223    | 0.580     | 0.138    | 0.826    | 0.867    |
+| **Logistic Reg.**   | 0.253    | 0.547     | 0.164    | 0.826    | 0.866    |
 
-The following classifier models were built with the cleansed dataset:
-1. Logistic Regression and
-2. Random Forest
+*Both Random Forest and Logistic regression had low F1 score, precision and recall due to class imbalance.  
+Accuracy was ignored due to class imbalance.*
 
+---
 
-Of the two benchmark models, the RandomForest was the best with the highest AUC and F1 score.  I ignore accuracy due to class imbalance. The below table summarizes the performance of these models:
-              **Model F1 Score   Precision Recall    AUC       Accuracy
-        Random Forest 0.223248   0.580432  0.138202  0.826458  0.867372
-  Logistic Regression 0.252747   0.546838  0.164356  0.826404  0.865973
-
-
-# Most important drivers of response
-
-The best RandomForest model I built shows the 4 most important drivers of response are BMI, GenHlth, HighBP and HighCol.  Here's the list of variables ranked by their importance: 
-
-                  **Importance
-BMI                     0.005984
-GenHlth                 0.004198
-HighBP                  0.002523
-HighChol                0.002227
-Age                     0.001510
-DiffWalk                0.000690
-PhysHlth                0.000635
-HvyAlcoholConsump       0.000631
-HeartDiseaseorAttack    0.000607
-MentHlth                0.000497
-Income                  0.000442
-Sex                     0.000307
-Education               0.000142
-CholCheck               0.000095
-AnyHealthcare           0.000083
-Veggies                 0.000083
-NoDocbcCost             0.000051
-Stroke                  0.000024
-Fruits                 -0.000008
-Smoker                 -0.000075
-PhysActivity           -0.000371
+## Resolving class imbalance
+I used the SMOTE algorithm to resolve the class imbalance in the dataset reported above. After applying SMOTE the dataset was balanced with a 50/50 split between diabetic and non-diabetic patients. 
 
 
-More details are in this Jupyter Notebook. 
+## MODELING
+After balancing the dataset with the SMOTE algorithm, the data was split into training (80%) and test sets (20%). Numerical variables were rescaled with the StandardScaler, while categorical variables were encoded with the OneHotEncoder.
+
+Three binary classifier algorithms were built to predict diabates from the balanced dataset. Gridsearch with 5-fold cross-validation was used to find the best model for each algorithm. The results are shown in the following table:
+
+| **Model**                | **F1 Score** | **Precision** | **Recall** | **AUC** | **Accuracy** |
+|--------------------------|--------------|--------------|------------|---------|--------------|
+| **Random Forest**        | 0.92         | 0.96         | 0.88       | 0.97    | 0.92         |
+| **XGBoost**              | 0.91         | 0.97         | 0.86       | 0.97    | 0.92         |
+| **Logistic Regression**  | 0.76         | 0.74         | 0.78       | 0.83    | 0.75         |
+
+## Random Forest Model
+Here's the results of the RandomForest model derived from a GridSearch with 5-fold cross-validation.  As shown in the below table, all performance metrics (F1 score, precision, recall and AUC) increased by at least 6% after balancing the dataset with SMOTE.  
+
+| Metric     | Before SMOTE | After SMOTE | % Increase |
+|-------------|---------------|-------------|-------------|
+| F1 Score    | 0.223         | 0.92        | 312%        |
+| Precision   | 0.580         | 0.96        | 66%         |
+| Recall      | 0.138         | 0.88        | 538%        |
+| AUC         | 0.826         | 0.97        | 17%         |
+| Accuracy    | 0.867         | 0.92        | 6%          |
+   
+Here's the confusion matrix and ROC curve of the model after SMOTE:
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+
+## XGBoost Model
+
+Here's the results of the XGBoost model trained with GridSearch and five-fold cross-validation after applying SMOTE to the dataset.
+| **F1 Score** | **Precision** | **Recall** | **AUC** | **Accuracy** |
+|---------------|---------------|------------|----------|---------------|
+| 0.91          | 0.97          | 0.86       | 0.97     | 0.92          |
+
+Here's the confusion matrix and ROC curve for the XGBoost model:
+![alt text](image-4.png)
+![alt text](image-5.png)
+
+## Logistic Regression
+
+Applying the SMOTE algorithm boosted the performance of the baseline Logistic regression model by at least 376% as shown in this table.  
+| Metric     | Before SMOTE | After SMOTE | % Increase |
+|------------|--------------|-------------|------------|
+| F1 Score   | 0.253        | 0.76        | 201%       |
+| Precision  | 0.547        | 0.74        | 35%        |
+| Recall     | 0.164        | 0.78        | 376%       |
+| AUC        | 0.826        | 0.83        | 0%         |
+| Accuracy   | 0.866        | 0.75        | -13%       |
+
+Here's the AUC curve after applying SMOTE:
+![alt text](image-6.png)
+
+
+## Most Important Drivers of Response
+
+The best XGBoost model identified the top drivers of response:
+
+![alt text](image-7.png)
+---
+
+### Variables Ranked by Importance (One-per-Line)
+The top 5 variables are as follows:
+
+1. BMI
+2. Age
+3. Income
+4. GenHlth and
+5. PhysHlth
+
