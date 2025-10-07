@@ -3,13 +3,16 @@
 This notebook willexplore the use of ML models to predict diabates. I will use a dataset from the Diabetes Health Indicators Dataset at Kaggle provided by Alex Teboul.    
 Dataset file: `diabetes_binary_health_indicators_BRFSS2015.csv` from the *Diabetes Health Indicators Dataset* by Alex Teboul.  It is based on the The Behavioral Risk Factor Surveillance System (BRFSS), which is a health-related telephone survey that is collected annually by the CDC. 
 
+A Google Slide presentation is available in [this document](https://docs.google.com/presentation/d/1sOsVcdZ8OUJ7PpY4s-Uf_7a-U0RYgr8NBvj2iu5KsZw/edit?slide=id.p#slide=id.p "Capstone presentation")
+
+
 ---
 
 ## Business Understanding
 
 The business goal is to **predict the risk of diabetes** using survey data and identify which dataset factors explain diabetes risk.  
 I performed EDA to understand the data, built initial baseline models with two ML classifiers (i.e. logistic regression and RandomForest). Then I explored additional ML algorithms to find one that does the best job of predicting which patients are likely to have diabetes.
----
+
 
 ## Data Understanding and EDA
 
@@ -118,17 +121,17 @@ Here's the AUC curve after applying SMOTE:
 
 ## Most Important Drivers of Response
 
-The best XGBoost model identified the top drivers of response:
+The best RandomForest model identified the top drivers of response:
 
-![alt text](image-7.png)
+![alt text](image-8.png)
 ---
 
 ### Variables Ranked by Importance (One-per-Line)
 The top 5 variables are as follows:
 
-1. BMI
-2. Age
-3. Income
-4. GenHlth and
-5. PhysHlth
+1. HighBP - High blood pressure
+2. GenHlth - Respondent's general health
+3. HighCol - High cholesterol 
+4. BMI and
+5. Age
 
